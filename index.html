@@ -1,0 +1,1307 @@
+<!-- template.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Standard favicon -->
+  <link rel="icon" type="image/x-icon" href="./favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+
+  <!-- Apple Touch Icons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="./apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="./apple-touch-icon-120x120.png">
+
+  <!-- Microsoft Tiles -->
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="./mstile-144x144.png">
+
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="./site.webmanifest">
+
+  <!-- Font Awesome (Open Source Icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- SEO / Social meta -->
+  <meta name="description" content="<p>This work presents a method that
+significantly improves performance on the Abstraction and Reasoning
+Corpus (ARC) by leveraging task-specific data augmentations, depth-first
+search algorithms, and large language models (LLMs) as both generators
+and scorers.</p>">
+  <meta name="keywords" content="ARCAbstract ReasoningLarge Language
+ModelsData AugmentationDepth-First SearchProduct of Experts">
+  <meta name="author" content="Daniel Franzen, Jan Disselhoff, David
+Hartmann">
+
+  <!-- OpenGraph / Twitter -->
+  <meta property="og:title" content="The ARChitects - Technical Report">
+  <meta property="og:description" content="<p>This work presents a
+method that significantly improves performance on the Abstraction and
+Reasoning Corpus (ARC) by leveraging task-specific data augmentations,
+depth-first search algorithms, and large language models (LLMs) as both
+generators and scorers.</p>">
+  <meta property="og:image" content="arc_example.png">
+  <link rel="canonical" href="https://arxiv.org/abs/2505.07859">
+
+  <title>The ARChitects - Technical Report</title>
+
+  <!-- MIT‑licensed font delivered via MIT‑licensed jsDelivr CDN (Fontsource). -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/npm/@fontsource/figtree@5.0.14/index.min.css" rel="stylesheet" />
+
+  <!-- Tailwind CSS + Typography plugin -->
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        fontFamily: {
+          sans: ['Figtree', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif'],
+          serif: ['Figtree', 'Georgia', 'Times New Roman', 'Times', 'serif']
+        },
+        extend: {
+          typography: ({ theme }) => ({
+            DEFAULT: {
+              css: {
+                color: theme('colors.gray.700'),
+                fontFamily: theme('fontFamily.sans').join(','),
+                a: {
+                  color: theme('colors.blue.600'),
+                  textDecoration: 'none',
+                  borderBottom: '1px solid ' + theme('colors.blue.200'),
+                  transition: 'all 0.2s ease',
+                  '&:hover': { 
+                    color: theme('colors.blue.700'),
+                    borderBottomColor: theme('colors.blue.600')
+                  }
+                },
+                h1: {
+                  fontFamily: theme('fontFamily.serif').join(','),
+                  fontWeight: '700',
+                  color: theme('colors.gray.900')
+                },
+                h2: {
+                  fontFamily: theme('fontFamily.serif').join(','),
+                  fontWeight: '700',
+                  color: theme('colors.gray.900'),
+                  marginTop: '2em',
+                  marginBottom: '0.5em',
+                  fontSize: '1.75rem'
+                },
+                h3: {
+                  fontFamily: theme('fontFamily.serif').join(','),
+                  fontWeight: '600',
+                  color: theme('colors.gray.800'),
+                  marginTop: '1.5em',
+                  marginBottom: '0.5em',
+                  fontSize: '1.35rem'
+                },
+                p: { 
+                  marginBottom: '1.25em',
+                  lineHeight: '1.7'
+                },
+                blockquote: {
+                  fontStyle: 'italic',
+                  color: theme('colors.gray.600'),
+                  borderLeftColor: theme('colors.blue.200'),
+                  paddingLeft: '1em',
+                  backgroundColor: theme('colors.gray.50'),
+                  borderRadius: '0.25rem',
+                  margin: '1.5rem 0',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                },
+                'h2#tldr + p + ul': {
+                  position: 'relative',
+                  background: theme('colors.blue.50'),
+                  borderLeft: '3px solid ' + theme('colors.blue.500'),
+                  margin: '0.5rem 0 2.5rem',
+                  padding: '1.75rem 2rem',
+                  // fontSize: '1rem',
+                  lineHeight: '1.8',
+                  color: theme('colors.gray.700'),
+                  borderRadius: '0.3rem',
+                  boxShadow: '0 2px 5px rgba(0,0,0,0.04)',
+                },
+                'h2#tldr': {
+                  marginBottom: '1.5rem',
+                  fontSize: '1.1rem',
+                  fontWeight: '600',
+                  color: theme('colors.white'),
+                  backgroundColor: theme('colors.blue.600'),
+                  display: 'inline-block',
+                  padding: '0.3rem 1rem',
+                  borderRadius: '9999px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                },
+                code: {
+                  backgroundColor: theme('colors.gray.100'),
+                  padding: '0.2em 0.4em',
+                  borderRadius: '0.25em',
+                  fontSize: '0.9em',
+                  border: '1px solid ' + theme('colors.gray.200')
+                },
+                'code::before': {
+                  content: ''
+                },
+                'code::after': {
+                  content: ''
+                },
+                pre: {
+                  backgroundColor: theme('colors.gray.50'),
+                  padding: '1.25em',
+                  borderRadius: '0.5em',
+                  overflowX: 'auto',
+                  color: theme('colors.gray.800'),
+                  border: '1px solid ' + theme('colors.gray.200'),
+                  boxShadow: '0 2px 5px rgba(0,0,0,0.03)'
+                },
+                'pre code': {
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  padding: '0'
+                },
+                'ul > li::marker': { color: theme('colors.blue.500') },
+                'ol > li::marker': { color: theme('colors.gray.600') },
+                strong: { color: theme('colors.gray.900'), fontWeight: '600' },
+                table: {
+                  fontSize: '0.9rem',
+                  width: '100%',
+                  marginTop: '2rem',
+                  marginBottom: '2rem',
+                  borderCollapse: 'separate',
+                  borderSpacing: '0',
+                  boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
+                  borderRadius: '0.375rem',
+                  overflow: 'hidden'
+                },
+                'thead th': {
+                  backgroundColor: theme('colors.gray.50'),
+                  borderBottom: '1px solid ' + theme('colors.gray.200')
+                },
+                'tbody tr': {
+                  borderBottom: '1px solid ' + theme('colors.gray.100'),
+                  '&:last-child': { borderBottom: 'none' }
+                }
+              }
+            }
+          })
+        }
+      }
+    }
+  </script>
+  
+  <!-- Copy to clipboard functionality -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const copyButtons = document.querySelectorAll('.copy-button');
+      
+      copyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const codeBlock = this.parentElement.nextElementSibling.querySelector('code');
+          const textToCopy = codeBlock.innerText;
+          
+          navigator.clipboard.writeText(textToCopy).then(() => {
+            // Change button text temporarily
+            const originalText = this.innerText;
+            this.innerText = 'Copied!';
+            this.classList.add('copied');
+            
+            setTimeout(() => {
+              this.innerText = originalText;
+              this.classList.remove('copied');
+            }, 2000);
+          });
+        });
+      });
+    });
+  </script>
+  
+  <style>
+    .copy-button {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.25rem 0.75rem;
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 1px solid #e2e8f0;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #4a5568;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 10;
+    }
+    
+    .copy-button:hover {
+      background-color: #f7fafc;
+      border-color: #cbd5e0;
+    }
+    
+    .copy-button.copied {
+      background-color: #e6ffed;
+      border-color: #a3e635;
+      color: #15803d;
+    }
+    
+    .code-block-wrapper {
+      position: relative;
+    }
+  </style>
+  
+  <!-- LiveReload script (will only connect when the LiveReload server is running) -->
+    <script>
+    document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':8000/livereload.js?snipver=1"></' + 'script>')
+  </script>
+  </head>
+<body class="text-gray-700 font-sans">
+
+  <!-- Header -->
+  <header class="bg-white shadow-sm py-8 mb-12">
+    <div class="mx-auto max-w-3xl px-4 text-center">
+      <h1 class="text-4xl font-serif font-bold text-gray-900">The
+ARChitects - Technical Report</h1>
+      <p class="mt-2 text-2xl text-gray-900">ARC Prize 2025 Solution
+Summary</p>
+
+      <!-- Author list with affiliation superscripts -->
+      <p class="mt-4 text-gray-600 text-lg flex justify-center flex-wrap gap-x-4 gap-y-0.5">
+                              <span class="whitespace-nowrap">
+                              <a href="https://www.linkedin.com/in/daniel-franzen-9609b7334/" class="text-blue-600 hover:underline -mr-1">Daniel
+Franzen</a>
+                            <sup>1*</sup>
+            </span> 
+                      <span class="whitespace-nowrap">
+                              <a href="https://www.linkedin.com/in/jan-disselhoff-1423a2240/" class="text-blue-600 hover:underline -mr-1">Jan
+Disselhoff</a>
+                            <sup>1*</sup>
+            </span> 
+                      <span class="whitespace-nowrap">
+                              <a href="https://www.linkedin.com/in/david-hartmann-aa0334274/" class="text-blue-600 hover:underline -mr-1">David
+Hartmann</a>
+                            <sup>2*</sup>
+            </span>              </p>
+
+      <!-- Affiliations list -->
+            <div class="mt-2 text-gray-600 text-md flex gap-x-2 justify-center flex-wrap">
+                  <span><sup>1</sup> JGU Mainz</span>
+                  <span><sup>2</sup> Lambda, Inc.</span>
+                  <span><sup>*</sup> “The ARChitects” Kaggle team
+members</span>
+              </div>
+      
+            <div class="mt-4 flex justify-center flex-wrap gap-3 sm:mx-10 md:mx-18">
+                  <a href="https://www.youtube.com/watch?v=CcoGi47qD-w" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 transition flex items-center gap-2 shadow-sm">
+                          <i class="fas fa-headphones"></i>
+                        Podcast
+          </a>
+                  <a href="https://www.kaggle.com/competitions/arc-prize-2025/leaderboard" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 transition flex items-center gap-2 shadow-sm">
+                          <i class="fas fa-trophy"></i>
+                        ARC Kaggle Competition 2025
+          </a>
+                  <a href="https://github.com/LambdaLabsML/ARC2025_Solution_by_the_ARChitects" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 transition flex items-center gap-2 shadow-sm">
+                          <i class="fas fa-code"></i>
+                        Code (GitHub)
+          </a>
+              </div>
+          </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="mx-auto max-w-3xl px-4 mb-16">
+    <article class="prose prose-lg mx-auto bg-white p-8">
+      <div class="text-center -mt-20 text-gray-600">
+      <p>Jump to: <a href="#tldr">TL;DR</a>, <a
+      href="#Initial-Strategy">Our Initial Strategy: Autoregressive
+      Model Improvements</a>, <a href="#Final-Submission">Our Final
+      Submission: Recursive Masked Diffusion Model</a>, <a
+      href="#things-that-didn-t-work">Things That Didn’t Work</a>, <a
+      href="#compute-budget">Compute Budget</a>, <a
+      href="#final-submission-results">Final Submission Results</a>, <a
+      href="#things-to-improve">Things to Improve</a>, <a
+      href="#see-y-all-soon">See Y’All Soon!</a></p>
+      </div>
+      <h2 id="tldr">TL;DR:</h2>
+      <p>This year, we used an exploration-exploitation strategy;
+      improving last year’s solution while simultaneously exploring
+      several new directions.</p>
+      <ul>
+      <li><strong>In the first half of the competition, we improved our
+      ARC 2024 AR-model approach</strong>, which relied on depth-first
+      search sampling and a product-of-experts selection mechanism. The
+      most significant changes were a stronger model (trained on more
+      data), single-task test time finetuning and a deeper DFS search,
+      enabled by speedups from speculative decoding and prefix
+      caching.</li>
+      <li><strong>Our final submission employed a masked diffusion
+      model</strong> (LLaDA-8B), where we modified the positional
+      encoding to better suit ARC-like inputs. Additionally, we also
+      developed recursive latent sampling methods that allowed us to
+      iteratively refine and improve upon the model’s guesses.</li>
+      <li><strong>Due to the exploratory nature of our strategy this
+      year, we tried a lot of things that didn’t work.</strong> From
+      hierarchical network architectures, over reasoning tokens to
+      synthetic data - we did test a few things that didn’t get us that
+      far. We want to share our experience below with the
+      community.</li>
+      <li><strong>Finally, we want to disclose our compute budget that
+      <a href="https://lambda.ai/">Lambda.ai</a> kindly has sponsored
+      for our journey.</strong></li>
+      </ul>
+      <h2 id="Initial-Strategy"><strong>Our Initial Strategy:
+      Autoregressive Model Improvements</strong></h2>
+      <p><strong>In the first half of the competition</strong>, we’ve
+      been focusing to max out our last year’s approach:</p>
+      <ul>
+      <li>an autoregressive model (<a
+      href="https://huggingface.co/nvidia/Mistral-NeMo-Minitron-8B-Base">nvidia/Mistral-NeMo-Minitron-8B-Base</a>)
+      with</li>
+      <li>an incredibly fast Depth-First-Search sampling for generation
+      and</li>
+      <li>Product-of-Experts selection mechanism to identify the most
+      probable solution.</li>
+      </ul>
+      <p>You can find all the details in <a
+      href="https://www.notion.so/The-ARChitects-Technical-Report-2a30571b42f380b6bee5c7d51d71126c?pvs=21"><strong>our
+      ICML publication</strong></a>, read the shorter summary below, or
+      jump directly down to our most recent addition to the community, a
+      masked diffusion-based ARC solver.</p>
+      <h3 id="previously-on-arc-prize-2024">Previously on <em>ARC Prize
+      2024</em> …</h3>
+      <p>Our last year’s approach consisted of three key ideas:</p>
+      <ol type="1">
+      <li><p><strong>Data Augmentations</strong>: We applied
+      ARC-specific data augmentations to improve the effectiveness of
+      training (both offline and the test-time training).</p></li>
+      <li><p><strong>Depth-First Search Sampling</strong>: By caching
+      results during generation, tree traversal of all possible
+      solutions above a certain threshold enables to generate a large
+      number of candidate solutions quickly without any additional
+      memory costs.</p>
+      <p><img
+      src="The%20ARChitects%20-%20Technical%20Report/candidates.gif" /></p></li>
+      <li><p><strong>Product-of-Expert (PoE) Scoring:</strong> The model
+      itself has already a good estimate of the probability that a
+      candidate is correct. By re-applying the augmentations to the
+      candidates and aggregating using the product of
+      neg-loglikelihoods, we get stable selection mechanism to decide
+      which candidate is most probable, considering all “views” at the
+      same time.</p>
+      <p><img
+      src="The%20ARChitects%20-%20Technical%20Report/rotate.gif" /></p></li>
+      </ol>
+      <h3 id="meanwhile-back-at-arc-prize-2025">Meanwhile, Back at ARC
+      Prize 2025 …</h3>
+      <p>So what has changed since our 2024 solution in terms of the AR
+      approach? Three things helped us to squeeze out as much
+      performance as possible to <a
+      href="https://www.kaggle.com/code/ironbar/arc25-leaderboard-evolution-updated-daily">reach
+      the top of the leaderboard</a>, on July 21st - well, at least for
+      a brief period of time.</p>
+      <ul>
+      <li><p><strong>First, we had a better model from the
+      start.</strong> Since we didn’t publish our best model last year
+      (we had a late submission that didn’t count at ARC Prize 2024 with
+      a score of 56.5%), we had a kickstart for this year’s
+      competition.</p>
+      <p>The improvement of this model came from using more data
+      (including the ARC-Heavy dataset which was released in the last
+      days of last year’s competition) and longer training.</p></li>
+      <li><p><strong>We changed the test-time training workflow to run
+      separately for each task,</strong> instead of fine-tuning the
+      model on multiple tasks simultaneously as in the 2024
+      contest.</p></li>
+      <li><p><strong>In addition to that, we were able to improve our
+      sampling method to generate even more candidate
+      solutions.</strong> First, we added <em>speculative decoding</em>
+      to our DFS algorithm, using a simple heuristic to guess the next
+      16 to 32 tokens instead of generating only a single token in each
+      inference step. This sped up the search by a factor of about 4.7x,
+      allowing us to reduce the cutoff threshold probability in the DFS
+      from 17% in our 2024 winning solution down to 7%. With the new
+      threshold, the DFS would naturally generate a lot more solution
+      candidates, so we also had to speed up the scoring process that
+      evaluates each solution candidate to find the most promising
+      guess. Here, we used a simple prefix caching strategy which
+      re-uses the KV cache for the examples and challenge input in each
+      augmentation. By doing so, we could speed up the scoring step by
+      5.8x, allowing us to efficiently process the increased number of
+      solution candidates and even bump the number of augmentations used
+      for scoring from 8 to 32, resulting in a more stable selection
+      process.</p></li>
+      </ul>
+      <p><strong>Using this approach, we achieved a score of 16.94% on
+      the public ARC2 leaderboard on August 11th.</strong> We realized
+      quickly that this approach was not enough for this years’ ARC
+      competition. So, while maxing out the performance using the
+      autoregressive approach, we started research towards a better
+      model - using masked diffusion language models.</p>
+      <h2 id="Final-Submission">Our Final Submission: Recursive Masked
+      Diffusion Model</h2>
+      <p>When we attended ICML 2025 to present <a
+      href="https://lambdalabsml.github.io/Product-of-Experts-ARC-Paper/">last
+      year’s paper</a>, it became clear to us that our autoregressive
+      approach wouldn’t be strong enough for certain puzzle types.
+      Especially tasks like <a
+      href="https://arcprize.org/play?task=16b78196">this one</a> (which
+      we haven’t seen being solved at all, yet) and <a
+      href="https://arcprize.org/play?task=5dbc8537">this one</a> (which
+      our model did solve in the end), where the model must understand
+      and alter the global structure of the solution.</p>
+      <p>From that point on, we leaned fully into an
+      <strong>exploration-exploitation strategy</strong>: continuing to
+      push our old model to its limits, while simultaneously working on
+      entirely new techniques.</p>
+      <p><strong>Two Issues Stood Out Immediately:</strong></p>
+      <ol type="1">
+      <li>The AR model was not trained to re-iterate upon it’s own first
+      guess, and therefore unable to perform the needed puzzle-ling and
+      trying of several solutions. This was only done implicitly using
+      our “Product-of-Expert” selection mechanism.</li>
+      <li>However, the simple augmentations we used previously, while
+      being a valuable tool to gauge the model’s assessment of it’s own
+      global mistakes, weren’t expressive enough to mitigate the issues
+      of autoregressive models on the new benchmark. In particular we
+      saw a lot of trouble on puzzle and simulation tasks, as well as
+      issues with diagonal line predictions.</li>
+      </ol>
+      <h3 id="towards-recursive-masked-diffusion-models">Towards
+      Recursive Masked Diffusion Models</h3>
+      <p>The observations above ultimately led us to a <strong>masked
+      diffusion approach</strong> and, later on, to a <strong>recursive
+      and continuous sampling method</strong> that allowed the model to
+      improve upon its own guesses.</p>
+      <p>We used a <a
+      href="https://huggingface.co/GSAI-ML/LLaDA-8B-Base">LLaDA-8B</a>
+      masked diffusion LLM and fine-tuned it to de-mask the solution,
+      assuming the output shape shape is already known.</p>
+      <p><strong>Technical Overview</strong></p>
+      <p>In essence, we used:</p>
+      <ul>
+      <li><strong>a masked diffusion LLM, <a
+      href="https://huggingface.co/GSAI-ML/LLaDA-8B-Base">GSAI-ML/LLaDA-8B-Base</a></strong>
+      The model is trained with discrete tokens and tasked with
+      replacing <code>&lt;mask&gt;</code> tokens with a proposed
+      solution. Architecturally, we replaced the original RoPE
+      positional encoding with a 2D variant, hoping that this would help
+      the model to work better on the two-dimensional grid structure of
+      the ARC-AGI tasks</li>
+      <li><strong>a fine-tunning setup to solve ARC-like problems, using
+      the same data pipeline as our AR model</strong>. Compared to the
+      training objectives provided with the original LLaDA model, we
+      used LoRA for more stable convergence and adapted the loss to
+      extract information from the multi-example format more
+      effectively.</li>
+      <li><strong>recursive latent sampling, our most impactful
+      addition</strong> We experimented with several sampling methods to
+      better leverage the masked diffusion model. Similar to our
+      observations with the AR model, we found that one-shot performance
+      was substantially weaker than a more thorough exploration of the
+      solution space. By continuously mixing latent tokens, we were able
+      to apply the model recursively and iteratively refine its own
+      predictions, effectively allowing it to improve on its previous
+      guesses.</li>
+      <li><strong>data-wise we used the same datasets as
+      before:</strong> ReARC, ARC Gen 100k, ARC 1 and ARC 2 training
+      &amp; evaluation sets, ARC-Heavy &amp; Concept ARC.</li>
+      </ul>
+      <h3 id="model-training-process">Model &amp; Training Process</h3>
+      <p>In terms of the model setup, besides hyperparameter tuning, we
+      adapted the positional encoding and the masking method to better
+      suit the ARC setting.</p>
+      <ul>
+      <li><p><strong>Positional Encoding Modifications</strong><br />
+      Starting out with the <a
+      href="https://huggingface.co/GSAI-ML/LLaDA-8B-Base"><strong>LLaDA-8B-Base</strong></a>
+      model, we modified the original model code to use a 2D positional
+      encoding inspired by the <a
+      href="https://jerryxio.ng/posts/nd-rope/">Golden Gate RoPE</a>
+      instead of the standard 1D RoPE that the model was originally
+      trained with. Unlike the classical 2D RoPE approach, which encodes
+      only horizontal and vertical directions, the Golden Gate RoPE
+      incorporates a range of other directions as well. We felt this
+      broader directional coverage would better suit ARC tasks, where
+      the model frequently needs to “look” across the grid from multiple
+      angles - an insight that has significantly boosted performance in
+      the ARC‘24 competition.</p>
+      <p>Our input format remains largely consistent with the previous
+      version, passing multiple input/output pairs to the model
+      sequentially, but we now expand all input/output grids to a
+      uniform size to align with our modified positional encoding. We do
+      this by first adding a single row of delimiter symbols along the
+      right and bottom edges of each original grid, then adding
+      additional padding tokens to expand the grid to a fixed 32×32
+      size.</p>
+      <p>After tokenization, when the position IDs have been assigned,
+      we remove the previously added padding tokens to save computation,
+      while preserving the remaining tokens’ assigned position IDs so
+      the model can still reference each token’s location using the new
+      2D positional scheme.</p></li>
+      <li><p><strong>Masking Strategy &amp; Loss
+      Calculation</strong><br />
+      In masked diffusion models, training typically involves masking a
+      subset of tokens and training the model to reconstruct them,
+      encouraging it to learn robust contextual representations.</p>
+      <p>Building on this idea, we adopt a fully random masking
+      strategy: for each output grid, we first draw a random masking
+      probability, then independently replace output tokens with mask
+      tokens according to that probability. Our training uses a standard
+      cross-entropy loss applied only to positions where a token had
+      been masked, ensuring the model focuses its learning on
+      reconstructing the masked content.</p>
+      <p>While we initially applied masking to just one of the output
+      grids, to allow the model to rely on the remaining unmasked grids
+      to infer the underlying transformation rules, we later discovered
+      that applying masking to multiple output grids at once could
+      substantially accelerate training without harming performance. In
+      our final setup, we randomized the number of grids to be masked
+      for each task, while ensuring that at least one output grid always
+      remained fully visible.</p></li>
+      <li><p><strong>Model Finetuning Process</strong> In our initial
+      finetuning phase, we trained the model using a rank-512 LoRA
+      across a diverse collection of datasets:</p>
+      <ul>
+      <li>the <a href="https://github.com/michaelhodel/re-arc">ReARC</a>
+      dataset by Michael Hodel,</li>
+      <li>the <a
+      href="https://www.kaggle.com/datasets/arcgen100k/the-arc-gen-100k-dataset">ARC-GEN-100K</a>
+      dataset,</li>
+      <li>the official ARC1 and ARC2 training and evaluation sets,</li>
+      <li>the <a href="https://arxiv.org/abs/2411.02272">ARC-Heavy</a>
+      dataset, and</li>
+      <li>the <a href="https://arxiv.org/abs/2305.07141">ConceptARC</a>
+      dataset.</li>
+      </ul>
+      <p>This pretraining stage ran for 175,000 training steps with an
+      effective batch size of 8. This took in total 39 hours on an
+      8×H100 cluster.</p>
+      <p>For the second, test-time finetuning stage, we made use of
+      Kaggle’s NVIDIA L4 GPUs. For each individual task, we trained a
+      specialized model directly on its provided examples, running for
+      128 training steps, each with a distinct random augmentation, and
+      using a batch size of 1 and a rank-32 LoRA.</p></li>
+      </ul>
+      <h3
+      id="observations-token-algebra-enables-recursion">Observations:
+      Token Algebra Enables Recursion</h3>
+      <p>Three observations really helped to boost the performance of
+      the masked diffusion model.</p>
+      <ol type="1">
+      <li><p><strong>Model Output Looks Like Model Input
+      Already</strong> For discrete masked diffusion, the model predicts
+      a distribution over tokens at each position, and that output can
+      be fed right back in as the next input. Typical remasking
+      strategies use the following loop:</p>
+      <div class="sourceCode" id="cb1"><pre
+      class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>guess <span class="op">=</span> model(all_masked)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(steps):</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    guess <span class="op">=</span> mask_strategy(guess)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    guess <span class="op">=</span> sample(guess)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    guess <span class="op">=</span> model(guess)</span></code></pre></div>
+      <p>This gave us an early hint: <strong>the model can refine its
+      own guesses</strong>. However, this usually only happens after a
+      discretization step, here done in <code>sample</code>. But is this
+      discretization step actually fully necessary?</p></li>
+      <li><p><strong>There Are No Tokens (🥄)</strong></p>
+      <p>Modern LLMs don’t actually operate on discrete symbols except
+      in the first embedding layer. Inside the model, <em>every</em>
+      token is just a point in continuous embedding space. And in that
+      space we can create linear combinations of input tokens!</p>
+      <p>(Other people are using similar techniques, for example in T2I
+      diffusion models, see <a
+      href="https://arxiv.org/abs/2411.07132">here</a>.)</p>
+      <p><strong>Input (what we pretend the model sees)</strong></p>
+      <p><code>&lt;token_what&gt;</code>, <code>&lt;token_is&gt;</code>,
+      <code>&lt;token_2&gt;</code>, <code>&lt;token_plus&gt;</code>,
+      <code>&lt;token_2&gt;</code>,
+      <code>&lt;token_question&gt;</code></p>
+      <p><strong>Actual internal representation</strong></p>
+      <p><code>&lt;token_is&gt;</code> →
+      <code>[0.756, 0.452, 0.112, 0.980, 0.221, ...]</code></p>
+      <p><strong>Token Algebra</strong></p>
+      <p>Because tokens are just vectors, we can <em>blend</em>
+      them:</p>
+      <p><code>&lt;token_is&gt; → 0.5 * &lt;token_is&gt; + 0.5 * &lt;token_equals&gt;</code></p>
+      <p>This simple idea (that tokens can be <strong>mixed</strong>)
+      turns out to unlock recursion for diffusion models.</p></li>
+      <li><p><strong><em>Key Observation:</em> Soft-Masking</strong></p>
+      <p>We discovered especially interesting behaviour when we
+      <strong>added the <code>&lt;mask&gt;</code> embedding to
+      <em>every</em> input position</strong>:
+      <code>&lt;color_ANY&gt; * 1.0 + &lt;mask&gt; * 1.0</code></p>
+      <p>It seems that during training the model has learned that
+      <code>&lt;mask&gt;</code> means “this position needs improvement”.
+      So when we soft-mask all positions, we are essentially instructing
+      the model to refine the direction of the guess. In other words,
+      adding <code>&lt;mask&gt;</code> everywhere implicitly turns the
+      diffusion model into a continuous iterative solver that improves
+      upon its own output each step. This creates a natural form of
+      <strong>recursive self-improvement</strong>, where each iteration
+      becomes: <strong>guess → soft-mask → refine → repeat</strong></p>
+      <p>This alone isn’t very stable without further tricks, though.
+      Probably, because the model has never seen it’s own outputs as
+      input during training. For this reason (and because we found this
+      techniques too late in the competition to finalize this approach,
+      say, by baking the recursion into the fine-tuning of the model),
+      our sampling methods were in that sense “stabilization” techniques
+      around this observation.</p></li>
+      </ol>
+      <p>In summary, the combined observation here, and the one that
+      enabled recursive sampling, is that the model works surprisingly
+      well with:</p>
+      <ul>
+      <li><strong>discrete inputs</strong>
+      (<code>&lt;color_0&gt;</code>)</li>
+      <li><strong>continuous mixtures</strong>
+      (<code>0.25 * &lt;color_0&gt; + 0.75 * &lt;color_1&gt;</code>)</li>
+      <li><strong>and even hybrid masked mixtures</strong> (especially,
+      adding the <code>&lt;mask&gt;</code> token to every position)</li>
+      </ul>
+      <p>This means inference is not limited to hard tokens. Instead, we
+      can nudge the model by giving it <em>soft combinations</em> of
+      token embeddings.</p>
+      <h3 id="sampling-strategy">Sampling Strategy</h3>
+      <div class="image-gallery">
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/28a6681f_0_predictions.gif" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/28a6681f_0_predictions.gif" alt="Task 28a6681f" />
+            <div class="gallery-caption">Task <a href="https://arcprize.org/play?task=28a6681f" target="_blank">28a6681f</a></div>
+          </a>
+        </div>
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/b6f77b65_0_predictions.gif" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/b6f77b65_0_predictions.gif" alt="Task b6f77b65" />
+            <div class="gallery-caption">Task <a href="https://arcprize.org/play?task=b6f77b65" target="_blank">b6f77b65</a></div>
+          </a>
+        </div>
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/142ca369_1_predictions.gif" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/142ca369_1_predictions.gif" alt="Task 142ca369" />
+            <div class="gallery-caption">Task <a href="https://arcprize.org/play?task=142ca369" target="_blank">142ca369</a></div>
+          </a>
+        </div>
+
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/6e4f6532_0_predictions.gif" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/6e4f6532_0_predictions.gif" alt="Task 6e4f6532" />
+            <div class="gallery-caption">Task <a href="https://arcprize.org/play?task=6e4f6532" target="_blank">6e4f6532</a></div>
+          </a>
+        </div>
+
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/8b7bacbf_1_predictions.gif" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/8b7bacbf_1_predictions.gif" alt="Task 8b7bacbf" />
+            <div class="gallery-caption">Task <a href="https://arcprize.org/play?task=8b7bacbf" target="_blank">8b7bacbf</a></div>
+          </a>
+        </div>
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/5dbc8537_0_predictions.gif" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/5dbc8537_0_predictions.gif" alt="Task 5dbc8537" />
+            <div class="gallery-caption">Task <a href="https://arcprize.org/play?task=5dbc8537" target="_blank">5dbc8537</a></div>
+          </a>
+        </div>
+
+
+
+      </div>
+      <style>
+      .image-gallery {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin: 2rem 0;
+        max-width: 100%;
+      }
+
+      .gallery-item {
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s ease, opacity 0.2s ease;
+      }
+
+      .gallery-item:hover {
+        transform: translateY(-4px);
+        opacity: 0.9;
+      }
+
+      .gallery-link {
+        display: block;
+        cursor: pointer;
+        text-decoration: none;
+        border: none !important;
+      }
+
+      .gallery-link img {
+        width: 100%;
+        height: auto;
+        display: block;
+        margin: 0;
+      }
+
+      .gallery-caption {
+        padding: 0.5rem;
+        text-align: center;
+        font-size: 0.875rem;
+        color: #4a5568;
+        background-color: #f7fafc;
+      }
+
+      .gallery-caption a {
+        color: #2563eb;
+        text-decoration: none;
+        border-bottom: 1px solid #bfdbfe;
+      }
+
+      .gallery-caption a:hover {
+        color: #1d4ed8;
+        border-bottom-color: #2563eb;
+      }
+
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        animation: fadeIn 0.3s ease;
+      }
+
+      .modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-content {
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain;
+        animation: zoomIn 0.3s ease;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 20px;
+        right: 40px;
+        color: #fff;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.2s ease;
+      }
+
+      .modal-close:hover {
+        color: #bbb;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      @keyframes zoomIn {
+        from { transform: scale(0.8); }
+        to { transform: scale(1); }
+      }
+
+      /* 2x2 Gallery Grid */
+      .image-gallery-2x2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin: 2rem 0;
+        max-width: 100%;
+      }
+
+      /* 5x2 Gallery Grid */
+      .image-gallery-5x2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin: 2rem 0;
+        max-width: 100%;
+      }
+
+      /* Side-by-side Gallery Grid */
+      .image-gallery-side-by-side {
+        display: flex;
+        gap: 1rem;
+        margin: 2rem 0;
+        max-width: 100%;
+        align-items: flex-start;
+      }
+
+      .image-gallery-side-by-side .gallery-item {
+        flex: 0 1 auto;
+      }
+
+      .image-gallery-side-by-side .gallery-item img {
+        height: 300px;
+        width: auto;
+        object-fit: contain;
+      }
+
+      /* Responsive design */
+      @media (max-width: 768px) {
+        .image-gallery {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .image-gallery {
+          grid-template-columns: 1fr;
+        }
+
+        .image-gallery-2x2 {
+          grid-template-columns: 1fr;
+        }
+
+        .image-gallery-5x2 {
+          grid-template-columns: 1fr;
+        }
+
+        .image-gallery-side-by-side {
+          flex-direction: column;
+        }
+
+        .image-gallery-side-by-side .gallery-item img {
+          height: auto;
+          width: 100%;
+        }
+      }
+      </style>
+      <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Create modal element
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+          <span class="modal-close">&times;</span>
+          <img class="modal-content" src="" alt="">
+        `;
+        document.body.appendChild(modal);
+
+        const modalImg = modal.querySelector('.modal-content');
+        const closeBtn = modal.querySelector('.modal-close');
+
+        // Add click handlers to all gallery links
+        document.querySelectorAll('.gallery-link').forEach(link => {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const imgSrc = this.getAttribute('href');
+            modalImg.src = imgSrc;
+            modal.classList.add('active');
+          });
+        });
+
+        // Close modal when clicking the close button
+        closeBtn.addEventListener('click', function() {
+          modal.classList.remove('active');
+        });
+
+        // Close modal when clicking outside the image
+        modal.addEventListener('click', function(e) {
+          if (e.target === modal) {
+            modal.classList.remove('active');
+          }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape' && modal.classList.contains('active')) {
+            modal.classList.remove('active');
+          }
+        });
+      });
+      </script>
+      <p>During development, we worked on <strong>two sampling methods
+      in parallel</strong> (which is part of our on-going strategy of
+      following multiple promising directions at the same time). Both
+      sampling methods were able to solve different tasks initially,
+      and, over the course of the last two weeks of the competition, we
+      merged the efforts by using the best parts of each.</p>
+      <p>The core tricks where:</p>
+      <ul>
+      <li><strong>soft-masking every token</strong> (adding
+      <code>&lt;mask&gt;</code> embeddings to each position)</li>
+      <li><strong>feeding the model’s output back into
+      itself</strong></li>
+      <li><strong>stabilization of predictions to improve
+      convergence</strong>, which was necessary, because we did not have
+      the time to take the recursive sampling approach into account
+      during model training. Here, we used either:
+      <ul>
+      <li><strong>discrete projection + noise injection</strong> (a
+      monte-carlo or simulated annealing based approach)</li>
+      <li><strong>feeding the output logits back to the model in a
+      continuous manner</strong> (which requires normalization/scaling
+      to ensure the model’s output can actually be handled numerically
+      stable as a next-step input)</li>
+      </ul></li>
+      </ul>
+      <p>Having found the soft-masking trick only 5 days before the
+      competition ended, we decided to focus on the latter approach,
+      since it required less refinement steps for this compute-budget
+      limited competition.</p>
+      <p>However, the other method (discrete projection + noise) did
+      solve different tasks for longer refinement loops, indicating to
+      be also a promising candidate for future iterations.</p>
+      <p><strong>Soft-Masking Sampling Loop</strong></p>
+      <p>Sampling with masked diffusion LLMs (dLLMs) starts by providing
+      a fully masked output grid and asking the model to replace the
+      mask tokens with content tokens. The sampling loop that follows is
+      typically some variation of: re-masking parts of the input,
+      feeding it back into the dLLM, and requesting a refined
+      prediction. This process repeats until the model converges on a
+      stable solution. Note that we use a different random augmentation
+      of the task in each refinement step.</p>
+      <p>The extension to use soft-masking is very similar:</p>
+      <div class="sourceCode" id="cb2"><pre
+      class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># start fully masked</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>logits <span class="op">=</span> np.zeros(shape)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>logits[..., mask_position] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> step <span class="kw">in</span> <span class="bu">range</span>(iterations):</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> model(logits)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># discretize, normalize or any other mixing of logits</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> normalize(logits)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      <span class="co"># soft-mask every position</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    logits[..., mask_position] <span class="op">=</span> <span class="dv">1</span></span></code></pre></div>
+      <p>The normalization method serves <strong>two
+      purposes</strong>:</p>
+      <ol type="1">
+      <li>it ensures that the model can actually handle the logits, both
+      numerically and also conceptually, since it was never trained on
+      non-discrete inputs, and</li>
+      <li>it also has the potential to re-introduce noise, encouraging
+      additional creative exploration during sampling. While this did
+      help in our tests, the extra noise also has led to a larger
+      sampling budgets to fully benefit from it. (For this reason, we
+      did not pursue this direction for this competition).</li>
+      </ol>
+      <p><strong>Most-Visited-Candidate Selection</strong></p>
+      <p>Convergence alone was not stable enough. Especially on harder
+      tasks where the model remained uncertain and tended to
+      <strong>flip back and forth between two or more solution
+      states</strong>. As a result, the recursive sampling loop
+      typically produced multiple candidate solutions.</p>
+      <p>We found that the most reliable approach was a <strong>stateful
+      selection method</strong>: counting which candidates were visited
+      most often during the soft-masking refinement process. For each
+      task, we then selected the two most-visited candidates as our
+      final guesses.</p>
+      <p>Alongside this, we also explored several <strong>stateless
+      scoring methods</strong>, which do not require access to the
+      sampling history. Two of them were particularly interesting:</p>
+      <ul>
+      <li>one method compared each candidate against the model’s final
+      prediction distribution to assess how well they aligned,
+      performing similarly well to the stateful most-visited
+      strategy</li>
+      <li>another provided a per-token confidence signal that we found
+      could be used as an effective <strong>early stopping</strong>
+      mechanism, allowing easy tasks to terminate sooner and
+      subsequently spending more inference time on harder tasks.
+      However, its threshold parameter involved a speed/accuracy
+      trade-off that we did not have time to fully optimize.</li>
+      </ul>
+      <p>Across all experiments, both stateful and stateless methods
+      worked comparably well, but our final submission relied on
+      <strong>most-visited count</strong> for selecting both the first
+      and second guess.</p>
+      <h3 id="shape-prediction">Shape Prediction</h3>
+      <p>With the demasking model working reliably, one major challenge
+      remains: determining the size of the output grid. To address this,
+      we introduce a second model and make a small adjustment to the
+      data format. As before, we provide multiple input/output pairs,
+      but we alter the representation of the final output grid to make
+      the model predict its shape:</p>
+      <ul>
+      <li>We no longer shrink the grid by removing padding tokens.</li>
+      <li>Instead, we also substitute the pixel-color tokens with
+      padding tokens.</li>
+      <li>This leaves only the delimiter tokens, which define the right
+      and bottom boundaries of the output grid</li>
+      </ul>
+      <p>We then perform an additional finetuning run, initializing from
+      our previously finetuned demasking model. In the model input, all
+      tokens of the final output grid are replaced by mask tokens and
+      have a loss applied to them, as we want the model to correctly
+      place the delimiter tokens on the grid, which we then use during
+      inference to detect the correct size of the output.</p>
+      <h2 id="things-that-didn-t-work">Things That Didn’t Work</h2>
+      <p>The exploratory nature of this year’s competition meant trying
+      <em>a lot</em> of ideas: probably a hundred on paper, a couple
+      dozen in practice, and it’s been only a handful that truly
+      increased the accuracy. We would like to share what we’ve learned,
+      but also want to highlight the things that <strong>looked
+      promising on paper but didn’t translate well in practice</strong>:
+      architectural adaptations we were excited about, and large-scale
+      synthetic data generation.</p>
+      <h3 id="synthetic-data">Synthetic Data</h3>
+      <p>We did work on synthetic data early on. Our best-guess approach
+      involved fine-tuning a coder LLM (<a
+      href="https://huggingface.co/Qwen/Qwen2.5-Coder-32B-Instruct">Qwen/Qwen2.5-Coder-32B-Instruct</a>)
+      to produce steerable Atari-like game screens on up-to 30x30
+      pixels. The approach was to use GRPO training and vision LLM as a
+      reward to decide whether the rendered screen look like Atari game
+      or not.</p>
+      <p>Specifically, we created a “game screen” generator, asking to
+      present a specific feature of a game. For example: “the dashboard
+      of a flight simulator”, “the UI of a real time strategy game”, “a
+      jump-and-run side-scroller”, “a close-up of a fighting game”, “the
+      health bar in a …. game”. The resulting generators (some shown
+      below) quickly resembled game screens, and allowed to “steer” some
+      features using input variables.</p>
+      <div class="image-gallery-2x2">
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/1413588514.png" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/1413588514.png" alt="Game screen example 1" />
+          </a>
+        </div>
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/643439895.png" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/643439895.png" alt="Game screen example 2" />
+          </a>
+        </div>
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/94846495.png" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/94846495.png" alt="Game screen example 3" />
+          </a>
+        </div>
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/image%201.png" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/image%201.png" alt="Game screen example 4" />
+          </a>
+        </div>
+      </div>
+      <p><strong>The hardest part, however, was to define “meaningful
+      puzzles” on these Atari-like game generators.</strong></p>
+      <p>One approach was to use our best predictive model so far to
+      decide whether a task was too easy or too hard, and using that as
+      the reward function for an additional GRPO training loop. Another
+      idea involved to measure the compressibility (both using LLM or
+      classic compression algorithms) of the input to output mappings,
+      since “less” compressible games contain more “independent noise”,
+      thus cannot be inferred unambiguously.</p>
+      <p>Our best approach of synthetic generation, unfortunately,
+      didn’t scale well enough; only 1 in about 50 to 100 generations
+      convinced us to be novel and interesting enough. However, early
+      tests showed that our small, semi-manually curated synthetic
+      dataset of 150 additional tasks did not yield sufficient
+      performance gains to justify pursuing this direction</p>
+      <div class="image-gallery-5x2">
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/image%202.png" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/image%202.png" alt="Synthetic data example 1" />
+          </a>
+        </div>
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/image%203.png" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/image%203.png" alt="Synthetic data example 2" />
+          </a>
+        </div>
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/image%204.png" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/image%204.png" alt="Synthetic data example 3" />
+          </a>
+        </div>
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/image%205.png" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/image%205.png" alt="Synthetic data example 4" />
+          </a>
+        </div>
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/image%206.png" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/image%206.png" alt="Synthetic data example 5" />
+          </a>
+        </div>
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/image%207.png" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/image%207.png" alt="Synthetic data example 6" />
+          </a>
+        </div>
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/image%208.png" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/image%208.png" alt="Synthetic data example 7" />
+          </a>
+        </div>
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/image%209.png" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/image%209.png" alt="Synthetic data example 8" />
+          </a>
+        </div>
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/image%2010.png" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/image%2010.png" alt="Synthetic data example 9" />
+          </a>
+        </div>
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/image%2011.png" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/image%2011.png" alt="Synthetic data example 10" />
+          </a>
+        </div>
+      </div>
+      <h3 id="novel-techniques-on-the-horizon">Novel Techniques on the
+      Horizon</h3>
+      <p>Throughout the competition, we kept a close eye on new ideas
+      popping up on X and arXiv, and a few of them sparked directions we
+      explored ourselves. One particularly exciting development of
+      <strong>tiny recursive models</strong>, which not only validated
+      ARC as a meaningful benchmark in our opinion but also highlighted
+      how crucial the <strong>embedding space</strong> for ARC-like
+      tasks is. Their approach shares some conceptual ideas with ours,
+      since both rely on recursion between input and output, but the
+      embedding design and task representations are radically different,
+      and that difference seems to matter a lot.</p>
+      <p>Inspired by this, we also experimented with ways to find better
+      representations of the ARC problem space. We tried alternative
+      positional encodings, hybrid schemes, and various embedding
+      tweaks, though most of our tests didn’t end up helping much.</p>
+      <p>On the architectural side, we tested a range of ideas: tiny
+      language models, <a
+      href="https://physics.allen-zhu.com/part-4-architecture-design/part-4-1">Canon
+      layers</a>, <a href="https://arxiv.org/abs/2507.07955">H-Net–style
+      architectures</a>, intermediate reasoning tokens, and alternative
+      grid representations. Some were promising, others dead ends. Life
+      of trying a thousand small ideas, you name it. ¯*(ツ)*/¯</p>
+      <p>But also remember: Only because these approaches did not pan
+      out for us, doesn’t mean that they can’t work at all!</p>
+      <h2 id="compute-budget"><strong>Compute Budget</strong></h2>
+      <p>For the duration of the challenge, <a
+      href="http://lambda.ai">Lambda</a> has generously provided us with
+      one to three GH200 machines for development and experiments
+      (depending on current needs) throughout the whole competition
+      time, and, in addition to that with two weeks of 16 x NVIDIA H100
+      GPUs to max out our solution in the final two weeks of the
+      competition. Early on, we used an additional machine with 8 x
+      NVIDIA A100 GPUs for a total runtime of about three weeks, mainly
+      while exploring the synthetic data generation, which, however, was
+      not used for the final submission.</p>
+      <p>We sincerely like to thank <a
+      href="https://lambda.ai/">Lambda</a> for providing us with
+      resources that enabled rapid iteration of our ideas.</p>
+      <h2 id="final-submission-results">Final Submission’s Results</h2>
+      <p>Since our final submission involved two models, one to predict
+      the shape of the solution, and, another one to fill out the empty
+      solution space, our estimates of the final score had a higher
+      variance.</p>
+      <p>Assuming the <strong>shape was known</strong>, our best two
+      sampling techniques achieved a score</p>
+      <ul>
+      <li>of about 30.5% ± 1% on the eval data set (not used for
+      training)</li>
+      <li>used 128 test-time training steps, and</li>
+      <li>102 inference steps (of recursive refinement) <em>Note</em>:
+      we used a total of 102 inference steps, however, to increase
+      chances of a correct solution, our algorithm uses two rounds of 51
+      inference steps each, with a cold restart in the middle.</li>
+      </ul>
+      <p>To infer the shape, we used a second LLaDA Model, which
+      achieved an accuracy of about 85% ± 2% on the eval data set in
+      predicting the correct shape given the example set of the
+      respective ARC task and the challenge input.</p>
+      <p><strong>Combining these two models, we expected a score of
+      about 26%, however, our best submission achieved a score of 21.67%
+      on the public leaderboard, which suggests some overfitting towards
+      the evaluation set.</strong></p>
+      <h2 id="things-to-improve"><strong>Things To Improve</strong></h2>
+      <p>Because of the multiplicative effect of the additional shape
+      model (accuracy of the shape model <em>times</em> the accuracy of
+      the known-shape model), a combined model would most likely helped
+      to improve the score further. The main reason why we started with
+      a dedicated model for each sub-task was the limited compute budget
+      on the Kaggle servers, in terms of both memory and speed.</p>
+      <p>Similarly, the recursive sampling method that we found in the
+      final 5 days of the competition was not reinforced in a proper
+      training objective; the model never learned to use it’s own
+      logits, yet we used it in that way anyways. To improve upon this,
+      the training loop would have required a single change of one (or
+      more) additional recursive forward passes of the model,
+      potentially eliminating any requirement to schedule and normalize
+      logits during inference. (Making the normalization just right has
+      shown to be rather difficult, otherwise inference became instable
+      for longer recursions.)</p>
+      <p>Looking at our scores of the last weeks, we made the biggest
+      jumps when we scaled-up training resources for faster iterations
+      in the last two weeks; better models enabled faster re-iterations
+      of the sampling techniques.</p>
+      <p>We should have scaled up earlier. ;D</p>
+      <h2 id="see-y-all-soon">See Y’All Soon!</h2>
+      <p>This year has been an exciting ride for us: from the moment we
+      switched from autoregressive models to masked diffusion, to the
+      breakthrough that continuous, recursive sampling could actually
+      work with the right tricks. It was also inspiring to see ARC
+      becoming more and more the de-facto benchmark in the broader
+      community, with results from Anthropic, Gemini, OpenAI, and xAI
+      pushing everyone forward.</p>
+      <p>One lesson that surprised us again and again: models with lower
+      training losses don’t just perform better. Instead, they
+      <strong>unlock entirely new ways</strong> of using them, which was
+      the reason why we found the soft-masking tricks so late in the
+      competition. Also, many of last year’s optimizations didn’t
+      transfer to the new model, but taking a two-pronged
+      exploration-exploitation approach helped us move fast while
+      developing novel methods. On the practical side, we kept things
+      generalizable by being careful with submissions (we used only 60
+      submissions throughout the competition, and only 17 of those used
+      our diffusion approach), reducing sampling steps of the diffusion
+      refinement, shortening test-time training, and always being
+      slightly biased towards more parameter free methods.</p>
+      <p>Thanks for following along, we’re looking forward to what comes
+      next in the ARC community. &lt;3</p>
+      <p>Greetings, <em>The ARChitects</em> - that is: <em>Daniel, Jan
+      &amp; David.</em> 👋</p>
+      <div class="image-gallery-side-by-side">
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/image%2012.png" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/image%2012.png" alt="The ARChitects team" />
+          </a>
+        </div>
+        <div class="gallery-item">
+          <a href="The%20ARChitects%20-%20Technical%20Report/arcfront.jpg" class="gallery-link">
+            <img src="The%20ARChitects%20-%20Technical%20Report/arcfront.jpg" alt="ARC front" />
+          </a>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white py-6 border-t border-gray-100 shadow-inner">
+    <div class="mx-auto max-w-3xl px-6 text-center">
+      <div class="mb-2">
+                <div class="flex justify-center flex-wrap gap-2 mb-4">
+                      <a href="https://www.youtube.com/watch?v=CcoGi47qD-w" class="text-gray-500 hover:text-blue-500 transition-colors duration-200 mx-2">
+                              <i class="fas fa-headphones"></i>
+                          </a>
+                      <a href="https://www.kaggle.com/competitions/arc-prize-2025/leaderboard" class="text-gray-500 hover:text-blue-500 transition-colors duration-200 mx-2">
+                              <i class="fas fa-trophy"></i>
+                          </a>
+                      <a href="https://github.com/LambdaLabsML/ARC2025_Solution_by_the_ARChitects" class="text-gray-500 hover:text-blue-500 transition-colors duration-200 mx-2">
+                              <i class="fas fa-code"></i>
+                          </a>
+          	      <a href="https://librecounter.org/referer/show" class="text-gray-500 hover:text-blue-500 transition-colors duration-200 mx-2" target="_blank">
+			<img src="https://librecounter.org/outline-orange.svg" referrerPolicy="unsafe-url" width="24"/>
+	      </a>
+        </div>
+              </div>
+      <div class="text-gray-500 text-sm">
+        &copy; 2025 Daniel Franzen, Jan Disselhoff, David Hartmann.
+                  Licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="text-blue-600 hover:underline transition-colors duration-200">CC
+BY-SA 4.0</a>.
+              </div>
+    </div>
+  </footer>
+
+</body>
+</html>
